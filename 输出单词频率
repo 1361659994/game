@@ -1,0 +1,8 @@
+# coding = utf -8
+import re
+from collections import Counter
+
+with open("Walden.txt", "r", encoding="utf-8") as fd:
+    texts = fd.read()  # 将文件的内容全部读取成一个字符串
+    count = Counter(re.split(r"\W+", texts))  # 以单词为分隔
+print(count )
