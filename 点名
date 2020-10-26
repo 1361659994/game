@@ -1,9 +1,79 @@
-keys = ['周嘉铖','钱珑超','徐展','尤桉哲','钱涛','黄舒怡','胡志辉','吴昭耀','陈萌萌','郑巧悦','陈艳','梁明皓','蒋俊超','徐颖','倪宏涛','潘梦倩','王中阳','毛贞强','张嫒','朱速航','陈涛','陆元超','叶振雄','奚申杰','叶梦婷','徐丽丽','潘艳']
-values = [2019660101,2019660102,2019660103,2019660104,2019660105,2019660106,2019660107,2019660108,2019660109,2019660110,2019660111,2019660112,2019660113,2019660114,2019660115,2019660116,2019660117,2019660119,2019660120,2019660121,2019660122,2019660123,2019660124,2019660125,2019660126,2019660127,2019660128]
-mydict = dict(zip(keys,values))
-import  random
-k=int(input('要抽取的数量'))
-keys=list(mydict)
-name=random.sample(keys,k)
-for i in name:
-    print(i,mydict[i])
+'''
+sys.version_info[0]返回Python的版本号的第一个数字。
+在 Python2 和 Python3 中，Tkinter 都在标准库中，无需安装即可使用。
+在 Python2 中，这个库叫 Tkinter ，在 Python3 中，这个库叫 tkinter ，首字母大小写不相同，在导包时需要注意
+
+'''
+import sys  # 导入sys包
+
+if sys.version_info[0] == 2:
+    import Tkinter
+    from Tkinter import *
+else:
+    import tkinter as Tkinter
+    from tkinter import *
+import random  # 导入Random模块，random()是不能直接访问的，需要导入random模块通过random静态调用该方法。
+
+data = ['周嘉铖','钱珑超','徐展','尤桉哲','钱涛','黄舒怡','胡志辉','吴昭耀','陈萌萌','郑巧悦','陈艳','梁明皓','蒋俊超','徐颖','倪宏涛','潘梦倩','王中阳','毛贞强','张嫒','朱速航','陈涛','陆元超','叶振雄','奚申杰','叶梦婷','徐丽丽','潘艳']
+going = True  # 全局变量
+is_run = False  # 全局变量
+
+
+def lottery_roll(var1, var2):  # 屏幕滚动执行的动作
+    global going
+    ##在函数内使用全局变量要进行声明，不声明则认为与全局变量同名不同值。
+    # 用法1：可以让 方法内的 局部变量 全局可用，并且在别的文件里也可以引用到；
+    # 用法2：在局部函数对全局变量重新赋值
+    show_member = random.choice(data)  # 随机选取字符串，即随机选取data中的元素
+    var1.set(show_member)
+    if going:  # if True:表示条件为真，执行if包含的语句
+        window.after(50, lottery_roll, var1, var2)
+        # after表示定时刷新数据，间隔50ms，执行函数lottery_roll
+    else:
+        var2.set('恭喜 {} ！！！'.format(show_member))  # format()表示按位置格式化字符串
+        going = True
+        return
+
+
+def lottery_start(var1, var2):  # 点击开始按钮执行的动作
+    global is_run
+    if is_run:
+        return
+    is_run = True
+    var2.set('倒霉蛋会是你吗？？？')
+    lottery_roll(var1, var2)  # 调用屏幕滚动的函数
+
+
+def lottery_end():  # 点击结束按钮执行的动作
+    global going, is_run
+    if is_run:
+        going = False
+        is_run = False
+
+
+# 当.py文件被直接运行时，if __name__ == '__main__'之下的代码块将被运行；当.py文件以模块形式被导入时，if __name__ == '__main__'之下的代码块不被运行。
+if __name__ == '__main__':
+    window = Tkinter.Tk()  # 实例化object，建立窗口window
+    window.geometry('405x320+250+15')  # 设定窗口的大小
+    window.title('   滚 动 点 名 app')  # 给窗口起个名字
+    bg_label = Label(window, width=70, height=24, bg='#ECf5FF')  # 控件Label的参数：width宽度，height高度，bg背景颜色
+    bg_label.place(anchor=NW, x=0, y=0)  # anchor控制Label文本的显示位置
+    var1 = StringVar(value='即 将 开 始')
+    show_label1 = Label(window, textvariable=var1, justify='left', anchor=CENTER, width=17, height=3, bg='#BFEFFF',
+                        font='楷体 -40 bold', foreground='black')
+    # justify:指定多行的对齐方式，必须是 left, right, or center；anchor：指定文本(text)或图像(bitmap/image)在Label中的显示位置（方位）可用的值：
+    show_label1.place(anchor=NW, x=21, y=20)  # x,y指定组件放置的绝对位置
+    # 在图形界面上设定标签。StringVar将label标签的内容设置为字符类型，用var来接收lottery_start函数的传出内容用以显示在标签上
+    var2 = StringVar(value='倒霉蛋是你吗？？？')
+    show_label2 = Label(window, textvariable=var2, justify='left', anchor=CENTER, width=38, height=3, bg='#ECf5FF',
+                        font='楷体 -18 bold', foreground='red')
+    show_label2.place(anchor=NW, x=21, y=240)
+    button1 = Button(window, text='开始', command=lambda: lottery_start(var1, var2), width=14, height=2, bg='#A8A8A8',
+                     font='宋体 -18 bold')  # Button控件的text参数表示按钮上显示的文本，command表示指定其回调函数
+    button1.place(anchor=NW, x=20, y=175)
+    button2 = Button(window, text='结束', command=lambda: lottery_end(), width=14, height=2, bg='#A8A8A8',
+                     font='宋体 -18 bold')
+    button2.place(anchor=NW, x=232, y=175)
+    window.mainloop()
+# 注意，loop因为是循环的意思，window.mainloop就会让window不断的刷新，如果没有mainloop,就是一个静态的window,传入进去的值就不会有循环，mainloop就相当于一个很大的while循环，有个while，每点击一次就会更新一次，所以我们必须要有循环
+# 所有的窗口文件都必须有类似的mainloop函数，mainloop是窗口文件的关键的关键
