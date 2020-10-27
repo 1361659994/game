@@ -5,6 +5,7 @@ sys.version_info[0]返回Python的版本号的第一个数字。
 
 '''
 import sys  # 导入sys包
+import pygame
 
 if sys.version_info[0] == 2:
     import Tkinter
@@ -40,6 +41,9 @@ def lottery_start(var1, var2):  # 点击开始按钮执行的动作
     if is_run:
         return
     is_run = True
+    pygame.mixer.init()
+    pygame.mixer.music.load('D:\CloudMusic\张伟进 - 猴哥.mp3')
+    pygame.mixer.music.play(1,20)
     var2.set('倒霉蛋会是你吗？？？')
     lottery_roll(var1, var2)  # 调用屏幕滚动的函数
 
@@ -49,6 +53,7 @@ def lottery_end():  # 点击结束按钮执行的动作
     if is_run:
         going = False
         is_run = False
+    pygame.mixer_music.stop()
 
 
 # 当.py文件被直接运行时，if __name__ == '__main__'之下的代码块将被运行；当.py文件以模块形式被导入时，if __name__ == '__main__'之下的代码块不被运行。
